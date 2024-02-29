@@ -1,6 +1,5 @@
 # cryptonets-android-sdk
 
-# Cryptonets Android Library
 
 This repository contains the `lib` and an example application that demonstrates its usage.
 
