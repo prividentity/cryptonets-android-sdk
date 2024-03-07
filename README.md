@@ -234,7 +234,7 @@ class Progress1FAProgressStatus ( val progress: Int, val enrolFaceResponse: Enro
 Perform predict (authenticate a user) after enroll user, this method return GUID/PUID if predict successful else check, check status, face status, and anti spoof status code, you can get code description from **Enroll**, However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.'
 
 ```kotlin
- val result = privateIdentitySession.predict(bitmap = rotatedBitmap, PredictConfig())
+ val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
 ```
 
 **Parameters:**
