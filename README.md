@@ -106,7 +106,7 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
  val resultJson = privateIdentitySession.enroll(bitmap = bitmap, enrollConfig = enrollConfig)
        
 ```
-The method accept 5 consecutive valid image of face, if you pass any invalid you will get empty `mf_token` you have to start again from scratch , this method is sync method.
+The method requires five consecutive valid facial images. A sequence of five images is considered consecutive if the same mf_token is received in each call. You will receive an mf_token after submitting a valid image. For each valid input, an mf_token is issued. If an empty or different mf_token is received at any point during the process, it indicates that you need to restart from the beginning. The mf_token ensures that each input belongs to the same individual and is error-free. 
 
 **Parameters:**
 - `bitmap`: It should be valid image witch have human face and image must be  0 degree rotated.
