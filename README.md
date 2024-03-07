@@ -45,8 +45,9 @@ This repository contains the `lib` and an example application that demonstrates 
 Here's how to init the SDK :
 Note: Don't call any function from UI thread
 
+
 ```kotlin
-val config = PrivateIdentityConfig(key = "", url = "")
+val config = PrivateIdentityConfig(privateKey = "", url = "")
 try {
   val  privateIdentitySession = PrivateIdentitySDK.initialize(config)
 } catch (e: Exception) {
