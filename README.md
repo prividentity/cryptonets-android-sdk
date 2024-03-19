@@ -19,7 +19,7 @@ This repository example doc for SDK.
 
 ### Instructions:
 
-1. **Download library**: Download the `lib-release.aar` file from this [link]([https://drive.google.com/file/](https://github.com/prividentity/cryptonets-android-sdk/releases/tag/V1)).
+1. **Download library**: Download the `lib-release.aar` file from  Release Section.
 3. **Open project**: Launch Android Studio and open your project.
 4. **Create libray directory**: Navigate to: `Project` → `app` → `right-click` → `New` → `Directory`, and name the new directory `libs`.
 5. **Copy library file**: Copy the downloaded `lib-release.aar` file into the `libs` directory.
