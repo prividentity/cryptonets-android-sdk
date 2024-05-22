@@ -29,7 +29,7 @@ This repository example doc for SDK.
 
    Groovy
    ```groovy
-   implementation files('libs/lib-release.aar')
+   implementation files('libs/cryptonets-android-sdk.aar')
    ```
 
    Kotlin
