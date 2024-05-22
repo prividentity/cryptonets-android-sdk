@@ -34,7 +34,7 @@ This repository example doc for SDK.
 
    Kotlin
    ```kotlin
-   implementation(files("$projectDir/libs/lib-release.aar"))
+   implementation(files("$projectDir/libs/cryptonets-android-sdk.aar"))
    ```
 
 7. **Sync project**
