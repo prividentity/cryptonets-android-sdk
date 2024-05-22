@@ -166,14 +166,18 @@ fun predictFace(bitmap:Bitmap) {
 
 ## FrontDocumentScan
 ```kotlin
-  val result = privateIdentitySession.frontDocumentScan(bitmap, DocumentConfig())
+  val result = privateIdentitySession.frontDocumentScan(bitmap, IdDocumentFrontScanConfig())
 ```
 
 This method accept valid photo of front side of ID document in witch have a human face, and return cropped ID, mugshot and Json response
 
 **Parameters:**
 - `bitmap`: Image that contain valid photo ID
-- `DocumentConfig`: Configurable params  
+- `IdDocumentFrontScanConfig`: Configurable params
+      -skipAntispoof default value false
+      -thresholdDocX default value 0.2
+      -thresholdDocY default value 0.2
+      -documentAutoRotation default value 0.2
 
 **Returns:**
 - ```ScanDocumentsFront``` object witch have ```JSON```,Cropped document and mugshot if available , if not available please check ```op_status``` from ```JSON```
