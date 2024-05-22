@@ -42,17 +42,25 @@ This repository example doc for SDK.
 
 ## Usage
 
+## Initialize Session
+
 Here's how to init the SDK :
 Note: Don't call any function from UI thread
 
 
 ```kotlin
-val config = PrivateIdentityConfig(privateKey = "", url = "")
+val config = PrivateIdentityConfig(sessionToken = "", baseUrl = "", debugLevel = DebugLevel.LEVEL_3)
 try {
   val  privateIdentitySession = PrivateIdentitySDK.initialize(config)
 } catch (e: Exception) {
    e.printStackTrace()
 }
+```
+
+## Deinitialize Session
+
+```kotlin
+ PrivateIdentitySDK.deInitializeSession()
 ```
 
 ## API Documentation
@@ -69,6 +77,7 @@ val version = session.getVersion()
 ```
 
 ### validate
+The funtion detect if face is found in image or not
 ```kotlin
    val result = privateIdentitySession.validate(bitmap = bitmap, ValidateConfig())
 ```
@@ -78,6 +87,7 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 
 - `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
 - `ValidateConfig` an object for internal configurable settings
+   - `skipAntispoof`  defaule value false
 
 **Returns:**
 
@@ -102,137 +112,27 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 
 ### Enroll
 ```kotlin
- val enrollConfig = EnrollConfig(mf_token = "You will get token once you give valid first image/frame ")
+ val enrollConfig = EnrollConfig(mfToken = "You will get token once you give valid that have face first image/frame ")
  val resultJson = privateIdentitySession.enroll(bitmap = bitmap, enrollConfig = enrollConfig)
        
 ```
 The method requires five consecutive valid facial images. A sequence of five images is considered consecutive if the same mf_token is received in each call. You will receive an mf_token after submitting a valid image. For each valid input, an mf_token is issued. If an empty or different mf_token is received at any point during the process, it indicates that you need to restart from the beginning. The mf_token ensures that each input belongs to the same individual and is error-free. 
 
 **Parameters:**
-- `bitmap`: It should be valid image witch have human face and image must be  0 degree rotated.
-- `enrollConfig` this enrollConfig have  non optional property `mf_token` witch is can't be null, first time `mf_token` can be empty once you have fist valid enroll you will get `mf_token` in response now pass this token to call 2nd time.
+- `Bitmap`: It should be valid image witch have human face and image must be  0 degree rotated.
+- `EnrollConfig`
+  - `skipAntispoof`  default value false
+  -  `mfToken` You will get after first enrollment  
 
 **Returns:**
 
 - A `JSON` representing the enrollment status 
- ```kotlin 
-{"status":0,"message":"Success","validation_status":[{"status":0,"face_confidence_score":0.6835715770721436,"anti_spoof_status":0,"anti_spoof_performed":true,"enroll_performed":false,"enroll_token":"2024-02-09_22-58-00-550830"}]} 
-```
 
-From response check if you have `enroll_token` that mean every thing goes right, if you received null/empty in this case check  `status`, `validation_status[index].status` and `anti_spoof_status`
-
-**status codes**
-
-```kotlin
-private var noError = 0
-private val faceNotDetected = 1
-private val invalidSessionHandler = 2
-private val invalidJsonConfiguration = 4
-private val invalidInputImageData = 5
-private val networkError = 6
-private val faceFoundWithInvalidFaceStatus = 7
-private val unhandledException = 8
-private val SpoofDetected = 10
-```
-
- ***if status == 0 then check **face status**, you can get face status from validation_status[index].status***
-
-```kotlin
-private val Err = -100
-private val faceNotDetected = -1
-private val Ok = 0
-private val faceTooClose = 3
-private val faceTooFar = 4
-private val faceRight = 5
-private val faceLeft = 6
-private val faceUp = 7
-private val faceDown = 8
-private val imageBlurr = 9
-private val faceWithGlass = 10
-private val faceWithMask = 11
-private val lookingLeft = 12
-private val lookingRight = 13
-private val lookingHigh = 14
-private val lookingDown = 15
-private val faceTooDark = 16
-private val faceTooBright = 17
-private val faceLowValConf = 18
-private val invalidFaceBackground = 19
-private val eyeBlink = 20
-private val mouthOpened = 21
-private val faceRotatedRight = 22
-private val faceRotatedLeft = 23 
-```
-
- ***if `validation_status[index].status==0`  then check **anti spoof status** `anti_spoof_status`
-
-```kotlin
-val RESULT_GENERIC_ERROR = -100
-val RESULT_GRAYSCALE = -5
-val RESULT_INVALID_FACE = -4
-val RESULT_FACE_TOO_CLOSE_TO_EDGE = -3
-val RESULT_MOBILE_PHONE_DETECTED = -2
-val RESULT_NO_FACE_DETECTED = -1
-val RESULT_NO_SPOOF_DETECTED = 0
-val RESULT_SPOOF_DETECTED = 1 
-```
-
-**Example:**
-```kotlin
-EnrollScreenViewModel.kt
-
-    private var enroll1FAProgressStatus: Progress1FAProgressStatus =
-   Progress1FAProgressStatus(0, null)
-    fun enrollFace(bitmap: Bitmap) {
-        if (stillProcesingOldImage || stopEnroll) {
-            return
-        }
-        viewModelScope.launch(Dispatchers.Default) {
-            stillProcesingOldImage = true
-            val enrollConfig = EnrollConfig(mf_token = enroll1FAProgressStatus?.enrolFaceResponse?.validationStatus?.firstOrNull()?.enroll_token ?: "")
-            val resultJson = privateIdentitySession.enroll(bitmap = bitmap, enrollConfig = enrollConfig)
-            if (resultJson.isNotEmpty()) {
-                val enrolFaceResponse = EnrolFaceResponse.fromJson(resultJson)
-                val enrolFaceValidationStatus = enrolFaceResponse.validationStatus?.firstOrNull()
-                if (enroll1FAProgressStatus.progress == 0 && !enrolFaceValidationStatus?.enroll_token.isNullOrEmpty()) {
-                    enroll1FAProgressStatus =
-                        Progress1FAProgressStatus(progress = 20, enrolFaceResponse)
-                } else if (enrolFaceResponse.guid.isNotEmpty() && enrolFaceResponse.puid.isNotEmpty()) {
-                    enroll1FAProgressStatus = Progress1FAProgressStatus(
-                        100,
-                        enrolFaceResponse
-                    )
-                    SharedPref.saveString(SharedPref.KEY_PUID,enrolFaceResponse.puid)
-                } else if (enrolFaceValidationStatus?.enroll_token.isNullOrEmpty() || enroll1FAProgressStatus?.enrolFaceResponse?.validationStatus?.firstOrNull()?.enroll_token != enrolFaceValidationStatus?.enroll_token) {
-                    enroll1FAProgressStatus = Progress1FAProgressStatus(0, enrolFaceResponse)
-
-                } else {
-                    enroll1FAProgressStatus = Progress1FAProgressStatus(
-                        enroll1FAProgressStatus!!.progress + 20,
-                        enrolFaceResponse
-                    )
-                }
-
-            } else {
-                throw EnrollUserFailException("Unknown error while getting response from backend ")
-            }
-            stillProcesingOldImage = false
-            _progressMutableLiveData.postValue(
-                enroll1FAProgressStatus
-            )
-        }
-    }
-```
-```kotlin
-Progress1FAProgressStatus.kt
-
-class Progress1FAProgressStatus ( val progress: Int, val enrolFaceResponse: EnrolFaceResponse?)
-```
-
-
+**Example**
+Please check ExampleEnroll.kt in the main brach
 
 ## Predict
-Perform predict (authenticate a user) after enroll user, this method return GUID/PUID if predict successful else check, check status, face status, and anti spoof status code, you can get code description from **Enroll**, However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.'
+Perform predict (authenticate a user) after enroll user, this method return GUID/PUID if predict successful else check, check status, face  validation status, and anti spoof status code from json response you will, you can get code description from **Enroll**, However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.'
 
 ```kotlin
  val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
@@ -240,10 +140,11 @@ Perform predict (authenticate a user) after enroll user, this method return GUID
 
 **Parameters:**
 - `bitmap`: Image that contain valid human face
-- `DocumentConfig`: Configurable params
+- `PredictConfig`: Configurable params
+   - `skipAntispoof` default value is false
 
 **Returns:**
-- `JSON` data that either GUID/PUID or status code, face validating status, anti spoof status  if not successfully 
+- `JSON` data that either GUID/PUID or status code, face validating status, anti spoof status  if not GUID/PUID 
 
 **Example**
 ```kotlin
