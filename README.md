@@ -174,10 +174,10 @@ This method accept valid photo of front side of ID document in witch have a huma
 **Parameters:**
 - `bitmap`: Image that contain valid photo ID
 - `IdDocumentFrontScanConfig`: Configurable params
-      -skipAntispoof default value false
-      -thresholdDocX default value 0.2
-      -thresholdDocY default value 0.2
-      -documentAutoRotation default value 0.2
+   - `skipAntispoof` default value false
+   - `thresholdDocX` default value 0.2
+   - `thresholdDocY` default value 0.2
+    - `documentAutoRotation` default value 0.2
 
 **Returns:**
 - ```ScanDocumentsFront``` object witch have ```JSON```,Cropped document and mugshot if available , if not available please check ```val``` from ``` result.getResponse().docFace.documentData.documentValidationStatus```
@@ -214,11 +214,11 @@ This method valid photo of document witch have Bar code PDF 417 barcode, the hig
 **Parameters:**
 - `bitmap`: Image that contain valid id document with barcode PDF 417 format.
 - `IdDocumentFrontScanConfig`: Configurable params
-    -documentScanBarcodeOnly default value false
-   -skipAntispoof default value false
-      -thresholdDocX default value 0.2
-      -thresholdDocY default value 0.2
-      -documentAutoRotation default value 0.2
+   - `documentScanBarcodeOnly` default value false
+   - `skipAntispoof` default value false
+   - `thresholdDocX` default value 0.2
+   - `thresholdDocY` default value 0.2
+   - `documentAutoRotation` default value 0.2
 
 **Returns:**
 Return `ScanDocumentsBack` witch have cropped document, cropped barcode,result.
