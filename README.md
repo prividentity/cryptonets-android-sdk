@@ -221,22 +221,22 @@ This method valid photo of document witch have Bar code PDF 417 barcode, the hig
       -documentAutoRotation default value 0.2
 
 **Returns:**
-Return `ScanDocumentsBack` witch have cropped document byteArray and Bitmap, cropped barcode byteArray and bitmap, result  byteArray and json.
+Return `ScanDocumentsBack` witch have cropped document, cropped barcode,result.
 
 **Example**
 
 ```kotlin
   val result = privateIdentitySession.frontDocumentScan(bitmap, DocumentConfig())
-  val op_status = result.getJsonData().toPOJO().op_status
- if (op_status==0){
+  val documentValidationStatus = result.getResponse().docFace.documentData.documentValidationStatus
+ if (documentValidationStatus==0){
      val cropDocBitmap = result.cropDoc()
      val cropFaceBitmap = result.cropBarCode()
  }else{
-     Log.d(TAG,"error  code : ${op_status}") // Please check 
+     Log.d(TAG,"error  code : ${documentValidationStatus}") // Please check 
  }
 ```
 
-**Op_Status Code**
+**documentValidationStatus Code**
 ```kotlin
 
 val INVALID_IMAGE = -100
