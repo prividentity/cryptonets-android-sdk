@@ -180,12 +180,10 @@ This method accept valid photo of front side of ID document in witch have a huma
       -documentAutoRotation default value 0.2
 
 **Returns:**
-- ```ScanDocumentsFront``` object witch have ```JSON```,Cropped document and mugshot if available , if not available please check ```op_status``` from ```JSON```
+- ```ScanDocumentsFront``` object witch have ```JSON```,Cropped document and mugshot if available , if not available please check ```val``` from ``` result.getResponse().docFace.documentData.documentValidationStatus```
 
-```JSON
-{"error":0,"payload_type":"face_id","image_width":1440,"image_height":1920,"doc_center_x":675.0,"doc_center_y":648.0,"doc_x1":82.0,"doc_y1":321.0,"doc_x2":1222.0,"doc_y2":265.0,"doc_x3":1266.0,"doc_y3":972.0,"doc_x4":120.0,"doc_y4":1028.0,"conf_level":0.9587152600288391,"cropped_doc_width":0,"cropped_doc_height":0,"cropped_doc_channels":1,"doc_validation_status":2,"puid":"","guid":"","predict_message":"","face_validity_message":"Not requested","op_message":"Document is blurry","predict_status":-1,"enroll_level":0,"face_valid":0,"op_status":2,"cropped_face_width":0,"cropped_face_height":0,"cropped_face_size":0,"cropped_face_channels":1}
-```
-**Op_Status Code**
+
+**documentValidationStatus**
 ```kotlin
 
 val INVALID_IMAGE = -100
@@ -208,14 +206,19 @@ val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
 
 ## BackDocumentScan
 ```kotlin
- val result = privateIdentitySession.backDocumentScan(bitmap = bitmap, IdDocumentBackScanConfig(false))
+ val result = privateIdentitySession.backDocumentScan(bitmap = bitmap, IdDocumentBackScanConfig())
 ```
 
-This method valid photo of document witch have Bar code PDF 417 barcode, the higger the quilty of image the batter chance it will read data from barcode, if you want just scan bar for faster result then use `document_scan_barcode_only` , and it return `ScanDocumentsBack` witch contain three byteArray (Cropped Document, Cropped Barcode, and result)  and Cropped bitmap, Cropped Barcode and JSON.
+This method valid photo of document witch have Bar code PDF 417 barcode, the higger the quilty of image the batter chance it will read data from barcode, if you want just scan bar for faster result then use `document_scan_barcode_only` , and it return `ScanDocumentsBack` Cropped bitmap, Cropped Barcode and result.
 
 **Parameters:**
 - `bitmap`: Image that contain valid id document with barcode PDF 417 format.
-- `IdDocumentBackScanConfig`: Configurable params witch required `document_scan_barcode_only` .
+- `IdDocumentFrontScanConfig`: Configurable params
+       -documentScanBarcodeOnly default value false
+      -skipAntispoof default value false
+      -thresholdDocX default value 0.2
+      -thresholdDocY default value 0.2
+      -documentAutoRotation default value 0.2
 
 **Returns:**
 Return `ScanDocumentsBack` witch have cropped document byteArray and Bitmap, cropped barcode byteArray and bitmap, result  byteArray and json.
