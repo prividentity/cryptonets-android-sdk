@@ -214,8 +214,8 @@ This method valid photo of document witch have Bar code PDF 417 barcode, the hig
 **Parameters:**
 - `bitmap`: Image that contain valid id document with barcode PDF 417 format.
 - `IdDocumentFrontScanConfig`: Configurable params
-       -documentScanBarcodeOnly default value false
-      -skipAntispoof default value false
+    -documentScanBarcodeOnly default value false
+   -skipAntispoof default value false
       -thresholdDocX default value 0.2
       -thresholdDocY default value 0.2
       -documentAutoRotation default value 0.2
