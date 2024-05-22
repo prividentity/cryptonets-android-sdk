@@ -110,6 +110,36 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 
 
 
+### Compare document and face
+
+```kotlin
+   val result =  privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+```
+This method takes an image of croped document witch have human face  in the form of a `Bitmap` and returns its result in `json`
+
+**Parameters:**
+
+- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
+- `CompareFaceAndMugShortConfig` an object for internal configurable settings
+   - `skipAntispoof`  defaule value true
+
+**Returns:**
+
+- A `JSON` representing the face status.
+
+**Example:**
+
+```kotlin
+    fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
+        viewModelScope.launch(Dispatchers.IO) {
+            privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+        }
+    }
+}
+```
+
+
+
 ### Enroll
 ```kotlin
  val enrollConfig = EnrollConfig(mfToken = "You will get token once you give valid that have face first image/frame ")
