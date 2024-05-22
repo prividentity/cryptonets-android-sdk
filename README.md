@@ -87,7 +87,7 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 
 - `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
 - `ValidateConfig` an object for internal configurable settings
-   - `skipAntispoof`  defaule value false
+   - `skipAntispoof`  defaule value true
 
 **Returns:**
 
@@ -151,7 +151,7 @@ The method requires five consecutive valid facial images. A sequence of five ima
 **Parameters:**
 - `Bitmap`: It should be valid image witch have human face and image must be  0 degree rotated.
 - `EnrollConfig`
-  - `skipAntispoof`  default value false
+  - `skipAntispoof`  default value true
   -  `mfToken` You will get after first enrollment  
 
 **Returns:**
@@ -171,7 +171,7 @@ Perform predict (authenticate a user) after enroll user, this method return GUID
 **Parameters:**
 - `bitmap`: Image that contain valid human face
 - `PredictConfig`: Configurable params
-   - `skipAntispoof` default value is false
+   - `skipAntispoof` default value is true
 
 **Returns:**
 - `JSON` data that either GUID/PUID or status code, face validating status, anti spoof status  if not GUID/PUID 
@@ -204,7 +204,7 @@ This method accept valid photo of front side of ID document in witch have a huma
 **Parameters:**
 - `bitmap`: Image that contain valid photo ID
 - `IdDocumentFrontScanConfig`: Configurable params
-   - `skipAntispoof` default value false
+   - `skipAntispoof` default value true
    - `thresholdDocX` default value 0.2
    - `thresholdDocY` default value 0.2
     - `documentAutoRotation` default value 0.2
@@ -244,7 +244,7 @@ This method valid photo of document witch have Bar code PDF 417 barcode, the hig
 **Parameters:**
 - `bitmap`: Image that contain valid id document with barcode PDF 417 format.
 - `IdDocumentFrontScanConfig`: Configurable params
-   - `documentScanBarcodeOnly` default value false
+   - `documentScanBarcodeOnly` default value true
    - `skipAntispoof` default value false
    - `thresholdDocX` default value 0.2
    - `thresholdDocY` default value 0.2
@@ -285,6 +285,51 @@ val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
 
 ```
 
+
+----------------------
+
+Face Captcha Status:
+
+* -100 Internal Error
+* -1 No Face Found
+* 0 Valid Face
+* 1 Image Spoof (Not Used)
+* 2 Video Spoof (Not Used)
+* 3 Too Close
+* 4 Too Close
+* 5 Too far to right (Close to right edge of image)
+* 6 Too far to left (Close to left edge of image)
+* 7 Too far up (Close to top edge of image)
+* 8 Too far down (Close to bottom edge of image)
+* 9 Too Blurry
+* 10 Glasses Detected
+* 11 Facemask Detected
+* 12 Chin too far left
+* 13 Chin too far right
+* 14 Chin too far up
+* 15 Chin too far down
+* 16 Image too dim
+* 17 Image too bright
+* 18 Face low confidence value
+* 19 Invalid face background (Not used)
+* 20 Eyes blink
+* 21 Mouth Open
+* 22 Face tilted right
+* 23 Face rotated left
+
+----------------------
+
+Antispoof Status:
+
+* -100 Invalid Image
+* -5 Greyscale Image
+* -4 Invalid Face
+* -2 Mobile phone detected
+* -1 No Face Detected
+* 0 Real
+* 1 Spoof
+
+----------------------
 
 
 
