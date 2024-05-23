@@ -184,7 +184,7 @@ The method requires five consecutive valid facial images. A sequence of five ima
 - A `JSON` representing the enrollment status 
 
 **Example**
-Please check ExampleEnroll.kt in the main brach
+Please check [ExampleEnroll.kt](https://github.com/prividentity/cryptonets-android-sdk/blob/main/ExampleEnroll.kt) in the main brach
 
 ## Predict
 Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status, and anti-spoof status code from the JSON response. You can get code descriptions at end of documentation. However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.
