@@ -96,7 +96,7 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 **Example:**
 
 ```kotlin
-    fun validImage(bitmap: Bitmap) {
+ fun validImage(bitmap: Bitmap) {
    viewModelScope.launch(Dispatchers.Default) {
       _uiState.emit("Validating image")
       val privateIdentitySession = PrivateIdentitySDK.getInstantIdentitySession()
@@ -130,7 +130,7 @@ This method takes an image of croped document witch have human face  in the form
 **Example:**
 
 ```kotlin
-    fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
+ fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
         viewModelScope.launch(Dispatchers.IO) {
             privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
         }
@@ -138,6 +138,36 @@ This method takes an image of croped document witch have human face  in the form
 }
 ```
 
+### Compare Faces
+
+```kotlin
+   privateIdentitySession.compareFaces( compareFacesConfig= CompareFacesConfig(),faceBitmapOne,faceBitmapTwo)
+```
+
+**Parameters:**
+
+- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
+- `CompareFacesConfig` an object for internal configurable settings
+   - `skipAntispoof`  defaule value true
+   - `faceMatchingThreshold` default value 1.24
+
+**Returns:**
+
+- A `JSON` response.
+  ```Kotlin
+  ```
+
+**Example:**
+
+```kotlin
+  fun compareTwoImage(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val bitmapTwo = BitmapFactory.decodeResource(context.resources,R.drawable.ellon_image)
+            val bitmapOne = BitmapFactory.decodeResource(context.resources, R.drawable.test_user_image)
+            privateIdentitySession.compareFaces( compareFacesConfig= CompareFacesConfig(skipAntispoof = true),bitmapOne,bitmapTwo)
+        }
+    }
+```
 
 
 ### Enroll
