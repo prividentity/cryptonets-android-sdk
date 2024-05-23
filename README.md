@@ -1,27 +1,46 @@
-# cryptonets-android-sdk
-
-
-This repository example doc for SDK.
+Cryptonets Android SDK
 
 ## Table of Contents
+
+- [Overview](#overview)
 - [Installation](#installation)
-- [Usage](#usage)
 - [API Documentation](#api-documentation)
-- [Example App](#example-app)
-    - [Installation](#example-app-installation)
+
+## Overview
+
+Private ID Android SDK supports user registration with identity proofing, and user face login with FIDO Passkey, using Cryptonets fully homomorphically encrypted (FHE) for privacy and security.
+
+Features:
+- Biometric face registration and authentication compliant with IEEE 2410-2021 Standard for Biometric Privacy, and exempt from GDPR, CCPA, BIPA, and HIPPA privacy law obligations.
+- Face registration and 1:n face login in 200ms constant time
+- Biometric age estimation with full privacy, on-device in 20ms
+- Unlimited users (unlimited gallery size)
+- Fair, accurate and unbiased
+- Operates online or offline, using local cache for hyper-scalability
+
+Builds
+- Verified Identity
+- Identity Assurance
+- Authentication Assurance
+- Federation Assurance
+- Face Login
+- Face Unlock
+- Biometric Access Control
+- Account Recovery
+- Face CAPTCHA
 
 ## Installation
 
-### Prerequisites
+### Requirements
 - Android Studio
 - Minimum API level: 24
 - ndkVersion = "26.1.10909125" 
 
-### Instructions:
+### Steps:
 
 1. **Download library**: Download the `cryptonets-android-sdk.aar` file from  Release Section.
 3. **Open project**: Launch Android Studio and open your project.
-4. **Create libray directory**: Navigate to: `Project` → `app` → `right-click` → `New` → `Directory`, and name the new directory `libs`.
+4. **Create library directory**: Navigate to: `Project` → `app` → `right-click` → `New` → `Directory`, and name the new directory `libs`.
 5. **Copy library file**: Copy the downloaded `cryptonets-android-sdk.aar` file into the `libs` directory.
 6. **Update Build Configuration**
     - Open  your app’s `build.gradle`  or `build.gradle.kts`
@@ -38,15 +57,45 @@ This repository example doc for SDK.
    ```
 
 7. **Sync project**
-    - Click on the `Sync Now` button that appears on the toolbar to sync your project.
+    - Click the `Sync Now` button on the toolbar to sync your project.
 
-## Usage
+## API Documentation
+
+Use the `PrivateIdentitySDK.getInstantIdentitySession()` singleton to get the session object whenever you need it, and use the session object to call any method. 
+
+### Version
+
+A function that returns the current SDK version.
+
+**Returns:**
+
+- `String`: value for the current version.
+
+**Example:**
+
+```kotlin 
+val session = PrivateIdentitySDK.getInstantIdentitySession()
+val version = session.getVersion()
+```
 
 ## Initialize Session
 
-Here's how to init the SDK :
-Note: Don't call any function from UI thread
+A method that creates the session for SDK work. It saves the session pointer inside the SDK and can be used for other methods. Please use it before making any other calls.
+**NB:** Don't call any function from the UI thread during the session initialization.
 
+```kotlin
+fun initialize(privateIdentityConfig: PrivateIdentityConfig): PrivateIdentitySession
+```
+
+**Parameters:**
+
+- `privateIdentityConfig: PrivateIdentityConfig`: session initialization parameters.
+
+**Returns:**
+
+- `PrivateIdentitySession` session wrapper for calling other functions. 
+
+**Example:**
 
 ```kotlin
 val config = PrivateIdentityConfig(sessionToken = "", baseUrl = "", debugLevel = DebugLevel.LEVEL_3)
@@ -59,132 +108,86 @@ try {
 
 ## Deinitialize Session
 
+A method that deinitializes the session created before. You can call this function when you no longer need SDK in your work, so it frees memory and closes the session.
+
 ```kotlin
- PrivateIdentitySDK.deInitializeSession()
+fun deInitializeSession()
 ```
-
-## API Documentation
-
-The `lib` provides a set of functionalities to work with. Below are the methods available in the library:
-
-Use `PrivateIdentitySDK.getInstantIdentitySession()` singleton to get session object when ever you need and use session object
-to call any method 
-
-### getVersion
-```kotlin 
-val session = PrivateIdentitySDK.getInstantIdentitySession()
-val version = session.getVersion()
-```
-
-### validate
-The funtion detect if face is found in image or not
-```kotlin
-   val result = privateIdentitySession.validate(bitmap = bitmap, ValidateConfig())
-```
-This method takes an image in the form of a `Bitmap` and returns its result in `json`
-
-**Parameters:**
-
-- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
-- `ValidateConfig` an object for internal configurable settings
-   - `skipAntispoof`  defaule value true
-
-**Returns:**
-
-- A `JSON` representing the face status.
 
 **Example:**
 
 ```kotlin
- private fun validImage(bitmap: Bitmap) {
-        viewModelScope.launch(Dispatchers.Default) {
-            _uiState.emit("Validating image")
-            val result = privateIdentitySession.validate(bitmap = bitmap, ValidateConfig())
-            _uiState.emit("Result ${result}")
-        }
-    }
+PrivateIdentitySDK.deInitializeSession()
 ```
 
+### Validate Face
 
-
-### Compare document and face
+A function that detects if there is a valid face on the input image.
 
 ```kotlin
-   val result =  privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+fun validate(bitmap: Bitmap, baseUserConfig: ValidateConfig): String
 ```
-This method takes an image of croped document witch have human face  in the form of a `Bitmap` and returns its result in `json`
 
 **Parameters:**
 
-- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
-- `CompareFaceAndMugShortConfig` an object for internal configurable settings
-   - `skipAntispoof`  defaule value true
+- `bitmap: Bitmap`: input image for validation. Make sure the bitmap doesn't rotate other than 0 degrees.
+- `baseUserConfig: ValidateConfig`: user's config for changing settings.
+
+The `ValidateConfig` has default values:
+
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
 
 **Returns:**
 
-- A `JSON` representing the face status.
+- `String`: a `JSON` representing the face status.
 
 **Example:**
 
 ```kotlin
- fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
-        viewModelScope.launch(Dispatchers.IO) {
-            privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
-        }
-    }
+fun validImage(bitmap: Bitmap) {
+   viewModelScope.launch(Dispatchers.Default) {
+      // _uiState.emit("Validating image")
+      val privateIdentitySession = PrivateIdentitySDK.getInstantIdentitySession()
+      val result = privateIdentitySession.validate(
+         bitmap = bitmap, ValidateConfig()
+      )
+      // _uiState.emit("Result ${result}")
+   }
 }
 ```
 
-### Compare Faces
+### Enroll Person
+
+Perform a new enrollment (register a new user) using the enroll function. The function will collect 5 consecutive, valid faces to be able to enroll. Using configuration, we must pass the same `mfToken` (Multiframe token) on success. If the `mfToken` value changes, we will have an invalid enrollment image and start again from the beginning. **Note:** 5 consecutive faces are needed. When enrollment is successful after 5 consecutive valid faces, enroll returns the enrollment result.
 
 ```kotlin
-   privateIdentitySession.compareFaces( compareFacesConfig= CompareFacesConfig(),faceBitmapOne,faceBitmapTwo)
+fun enroll(bitmap: Bitmap, enrollConfig: EnrollConfig): String
 ```
 
 **Parameters:**
+- `bitmap: Bitmap`: input image for enrolment. Make sure the bitmap doesn't rotate other than 0 degrees.
+- `enrollConfig: EnrollConfig`: user's config for changing settings.
 
-- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
-- `CompareFacesConfig` an object for internal configurable settings
-   - `skipAntispoof`  defaule value true
-   - `faceMatchingThreshold` default value 1.24
+the `EnrollConfig` has default values:
+
+1) `imageFormat` - `"rgba"`: the SDK expects the RGBA image format.
+2) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+3) `mfToken`: you will get it after first enrollment.
 
 **Returns:**
 
-- A `JSON` response.
- 
-**Example:**
+- `String`: a `JSON` representing the face status. 
 
-```kotlin
-fun compareTwoImage(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val bitmapTwo = BitmapFactory.decodeResource(context.resources,R.drawable.ellon_image)
-            val bitmapOne = BitmapFactory.decodeResource(context.resources, R.drawable.test_user_image)
-            privateIdentitySession.compareFaces( compareFacesConfig= CompareFacesConfig(skipAntispoof = true),bitmapOne,bitmapTwo)
-        }
-    }
-```
+**Example**
 
-
-### Enroll
 ```kotlin
  val enrollConfig = EnrollConfig(mfToken = "You will get token once you give valid that have face first image/frame ")
  val resultJson = privateIdentitySession.enroll(bitmap = bitmap, enrollConfig = enrollConfig)
        
 ```
-The method requires five consecutive valid facial images. A sequence of five images is considered consecutive if the same mf_token is received in each call. You will receive an mf_token after submitting a valid image. For each valid input, an mf_token is issued. If an empty or different mf_token is received at any point during the process, it indicates that you need to restart from the beginning. The mf_token ensures that each input belongs to the same individual and is error-free. 
 
-**Parameters:**
-- `Bitmap`: It should be valid image witch have human face and image must be  0 degree rotated.
-- `EnrollConfig`
-  - `skipAntispoof`  default value true
-  -  `mfToken` You will get after first enrollment  
+**Note:** Please check ExampleEnroll.kt in the `main` branch.
 
-**Returns:**
-
-- A `JSON` representing the enrollment status 
-
-**Example**
-Please check [ExampleEnroll.kt](https://github.com/prividentity/cryptonets-android-sdk/blob/main/ExampleEnroll.kt) in the main brach
 
 ## Predict
 Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status, and anti-spoof status code from the JSON response. You can get code descriptions at end of documentation. However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.
@@ -205,17 +208,45 @@ Perform predict (authenticate a user) after enrolling the user. This method retu
 ```kotlin
  fun predictFace() {
         viewModelScope.launch(Dispatchers.IO) {
-            _uiState.emit("Predict face...")
-            userCameraIamgeUri?.getBitmapFromUri(context)?.let { bitmap ->
-                val rotatedBitmap = bitmapRepository.rotateImageIfRequired(bitmap = bitmap, userCameraIamgeUri!!)
-                val result = privateIdentitySession.predict(bitmap = rotatedBitmap, PredictConfig())
-                _uiState.emit("Result ${result}")
+                val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
+                 if(result.toPOJO().guid!=null){
+                     Log.d(TAG,"success")
+                 }else{
+                     //check 
+                     Log.d(TAG,"fail")
+                 }
             }
         }
-    }    
+    
 ```
 
+### Compare Document and Face
 
+```kotlin
+   val result =  privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+```
+This method takes an image of croped document witch have human face  in the form of a `Bitmap` and returns its result in `json`
+
+**Parameters:**
+
+- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
+- `CompareFaceAndMugShortConfig` an object for internal configurable settings
+   - `skipAntispoof`  defaule value true
+
+**Returns:**
+
+- A `JSON` representing the face status.
+
+**Example:**
+
+```kotlin
+    fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
+        viewModelScope.launch(Dispatchers.IO) {
+            privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+        }
+    }
+}
+```
 
 ## FrontDocumentScan
 ```kotlin
@@ -349,17 +380,3 @@ Antispoof Status:
 * 1 Spoof
 
 ----------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
