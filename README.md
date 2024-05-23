@@ -96,16 +96,13 @@ This method takes an image in the form of a `Bitmap` and returns its result in `
 **Example:**
 
 ```kotlin
- fun validImage(bitmap: Bitmap) {
-   viewModelScope.launch(Dispatchers.Default) {
-      _uiState.emit("Validating image")
-      val privateIdentitySession = PrivateIdentitySDK.getInstantIdentitySession()
-      val result = privateIdentitySession.validate(
-         bitmap = bitmap, ValidateConfig()
-      )
-      _uiState.emit("Result ${result}")
-   }
-}
+ private fun validImage(bitmap: Bitmap) {
+        viewModelScope.launch(Dispatchers.Default) {
+            _uiState.emit("Validating image")
+            val result = privateIdentitySession.validate(bitmap = bitmap, ValidateConfig())
+            _uiState.emit("Result ${result}")
+        }
+    }
 ```
 
 
@@ -155,12 +152,13 @@ This method takes an image of croped document witch have human face  in the form
 
 - A `JSON` response.
   ```Kotlin
+  
   ```
 
 **Example:**
 
 ```kotlin
-  fun compareTwoImage(){
+fun compareTwoImage(){
         viewModelScope.launch(Dispatchers.IO) {
             val bitmapTwo = BitmapFactory.decodeResource(context.resources,R.drawable.ellon_image)
             val bitmapOne = BitmapFactory.decodeResource(context.resources, R.drawable.test_user_image)
@@ -192,7 +190,7 @@ The method requires five consecutive valid facial images. A sequence of five ima
 Please check ExampleEnroll.kt in the main brach
 
 ## Predict
-Perform predict (authenticate a user) after enroll user, this method return GUID/PUID if predict successful else check, check status, face  validation status, and anti spoof status code from json response you will, you can get code description from **Enroll**, However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.'
+Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status, and anti-spoof status code from the JSON response. You can get code descriptions at end of documentation. However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.
 
 ```kotlin
  val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
@@ -208,18 +206,16 @@ Perform predict (authenticate a user) after enroll user, this method return GUID
 
 **Example**
 ```kotlin
-fun predictFace(bitmap:Bitmap) {
+ fun predictFace() {
         viewModelScope.launch(Dispatchers.IO) {
-                val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
-                 if(result.toPOJO().guid!=null){
-                     Log.d(TAG,"success")
-                 }else{
-                     //check 
-                     Log.d(TAG,"fail")
-                 }
+            _uiState.emit("Predict face...")
+            userCameraIamgeUri?.getBitmapFromUri(context)?.let { bitmap ->
+                val rotatedBitmap = bitmapRepository.rotateImageIfRequired(bitmap = bitmap, userCameraIamgeUri!!)
+                val result = privateIdentitySession.predict(bitmap = rotatedBitmap, PredictConfig())
+                _uiState.emit("Result ${result}")
             }
         }
-    
+    }    
 ```
 
 
@@ -286,14 +282,10 @@ Return `ScanDocumentsBack` witch have cropped document, cropped barcode,result.
 **Example**
 
 ```kotlin
-  val result = privateIdentitySession.frontDocumentScan(bitmap, DocumentConfig())
-  val documentValidationStatus = result.getResponse().docFace.documentData.documentValidationStatus
- if (documentValidationStatus==0){
-     val cropDocBitmap = result.cropDoc()
-     val cropFaceBitmap = result.cropBarCode()
- }else{
-     Log.d(TAG,"error  code : ${documentValidationStatus}") // Please check 
- }
+fun scanDocumentsBack(bitmap: Bitmap) {
+        val result = privateIdentitySession.backDocumentScan(bitmap = bitmap, IdDocumentBackScanConfig(skipAntispoof = true, thresholdDocY = 0.0, thresholdDocX = 0.0))
+        updateUi(result)
+    }
 ```
 
 **documentValidationStatus Code**
@@ -318,7 +310,7 @@ val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
 
 ----------------------
 
-Face Captcha Status:
+Face Status:
 
 * -100 Internal Error
 * -1 No Face Found
