@@ -38,7 +38,7 @@ Builds
 
 ### Steps:
 
-1. **Download library**: Download the `cryptonets-android-sdk.aar` file from  Release Section.
+1. **Download library**: Download the `cryptonets-android-sdk.aar` file from the [Release]([https://drive.google.com/file/](https://github.com/prividentity/cryptonets-android-sdk/releases)) section.
 3. **Open project**: Launch Android Studio and open your project.
 4. **Create library directory**: Navigate to: `Project` → `app` → `right-click` → `New` → `Directory`, and name the new directory `libs`.
 5. **Copy library file**: Copy the downloaded `cryptonets-android-sdk.aar` file into the `libs` directory.
@@ -78,7 +78,7 @@ val session = PrivateIdentitySDK.getInstantIdentitySession()
 val version = session.getVersion()
 ```
 
-## Initialize Session
+### Initialize Session
 
 A method that creates the session for SDK work. It saves the session pointer inside the SDK and can be used for other methods. Please use it before making any other calls.
 **NB:** Don't call any function from the UI thread during the session initialization.
@@ -106,7 +106,7 @@ try {
 }
 ```
 
-## Deinitialize Session
+### Deinitialize Session
 
 A method that deinitializes the session created before. You can call this function when you no longer need SDK in your work, so it frees memory and closes the session.
 
@@ -187,7 +187,7 @@ The `EnrollConfig` has default values:
 
 **Note:** Please check ExampleEnroll.kt in the `main` branch.
 
-## Predict Person
+### Predict Person
 
 Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status and anti-spoof status code from the JSON response. You can get code descriptions at the end of the documentation. However, if the user is not enrolled in the system, this call will return a status of -1 and the message "User not enrolled."
 
@@ -305,7 +305,7 @@ A sample JSON result:
 }
 ```
 
-## Front Document Scan
+### Front Document Scan
 
 This function allows you to scan data from the front side of the document (government ID or driver's license). This method accepts a valid image of the front side of the ID document with a mugshot and returns a cropped document and mugshot images as well as a resulting JSON document.
 
@@ -340,7 +340,7 @@ fun scanDocumentsFront(bitmap: Bitmap) {
 }
 ```
 
-## Back Document Scan
+### Back Document Scan
 
 This function allows you to scan data from the back side of the document (government ID or driver's license). This method accepts a valid image of the back side of the ID document with a PTD417 barcode. It returns a cropped document and barcode images, as well as a resulting JSON document that contains barcode parsing results, if any. Note: high input image resolution is important for better barcode parsing results.
 
