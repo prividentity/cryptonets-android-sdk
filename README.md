@@ -1,4 +1,4 @@
-Cryptonets Android SDK
+# Cryptonets Android SDK
 
 ## Table of Contents
 
@@ -168,17 +168,16 @@ fun enroll(bitmap: Bitmap, enrollConfig: EnrollConfig): String
 - `bitmap: Bitmap`: input image for enrolment. Make sure the bitmap doesn't rotate other than 0 degrees.
 - `enrollConfig: EnrollConfig`: user's config for changing settings.
 
-the `EnrollConfig` has default values:
+The `EnrollConfig` has default values:
 
-1) `imageFormat` - `"rgba"`: the SDK expects the RGBA image format.
-2) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
-3) `mfToken`: you will get it after first enrollment.
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+2) `mfToken`: you will get it after first enrollment.
 
 **Returns:**
 
 - `String`: a `JSON` representing the face status. 
 
-**Example**
+**Example:**
 
 ```kotlin
  val enrollConfig = EnrollConfig(mfToken = "You will get token once you give valid that have face first image/frame ")
@@ -188,157 +187,199 @@ the `EnrollConfig` has default values:
 
 **Note:** Please check ExampleEnroll.kt in the `main` branch.
 
+## Predict Person
 
-## Predict
-Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status, and anti-spoof status code from the JSON response. You can get code descriptions at end of documentation. However, if the user is not enrolled in the system, the predict call will return a status of -1 along with the message 'User not enrolled.
+Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status and anti-spoof status code from the JSON response. You can get code descriptions at the end of the documentation. However, if the user is not enrolled in the system, this call will return a status of -1 and the message "User not enrolled."
 
 ```kotlin
- val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
+fun predict(bitmap: Bitmap, preidctConfig: PredictConfig): String
 ```
 
 **Parameters:**
-- `bitmap`: Image that contain valid human face
-- `PredictConfig`: Configurable params
-   - `skipAntispoof` default value is true
+- `bitmap: Bitmap`: input image for enrolment.
+- `preidctConfig: PredictConfig`: user's config for changing settings.
 
-**Returns:**
-- `JSON` data that either GUID/PUID or status code, face validating status, anti spoof status  if not GUID/PUID 
+The `PredictConfig` has default values:
 
-**Example**
-```kotlin
- fun predictFace() {
-        viewModelScope.launch(Dispatchers.IO) {
-                val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
-                 if(result.toPOJO().guid!=null){
-                     Log.d(TAG,"success")
-                 }else{
-                     //check 
-                     Log.d(TAG,"fail")
-                 }
-            }
-        }
-    
-```
-
-### Compare Document and Face
-
-```kotlin
-   val result =  privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
-```
-This method takes an image of croped document witch have human face  in the form of a `Bitmap` and returns its result in `json`
-
-**Parameters:**
-
-- `bitmap`:  It should be of type Bitmap and Make sure bitmap not rotated other then 0 degree.
-- `CompareFaceAndMugShortConfig` an object for internal configurable settings
-   - `skipAntispoof`  defaule value true
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.  
 
 **Returns:**
 
-- A `JSON` representing the face status.
+- `String`: a `JSON` data that either GUID/PUID or status code, face validating status, anti spoof status.
 
 **Example:**
 
 ```kotlin
-    fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
-        viewModelScope.launch(Dispatchers.IO) {
-            privateIdentitySession.campareMugShort(userConfig = CompareFaceAndMugShortConfig(),userImage,cropIdImage)
+fun predictFace() {
+    viewModelScope.launch(Dispatchers.IO) {
+        val result = privateIdentitySession.predict(bitmap = bitmap, PredictConfig())
+        if (result.toPOJO().guid != null) {
+            Log.d(TAG,"success")
+        } else {
+            //check 
+            Log.d(TAG,"fail")
         }
     }
 }
 ```
 
-## FrontDocumentScan
-```kotlin
-  val result = privateIdentitySession.frontDocumentScan(bitmap, IdDocumentFrontScanConfig())
-```
+### Compare Document and Face
 
-This method accept valid photo of front side of ID document in witch have a human face, and return cropped ID, mugshot and Json response
+```kotlin
+fun campareMugShort(userConfig: CompareFaceAndMugShortConfig, salfieBitmap: Bitmap, cropIdDocument: Bitmap): String
+```
 
 **Parameters:**
-- `bitmap`: Image that contain valid photo ID
-- `IdDocumentFrontScanConfig`: Configurable params
-   - `skipAntispoof` default value true
-   - `thresholdDocX` default value 0.2
-   - `thresholdDocY` default value 0.2
-    - `documentAutoRotation` default value 0.2
+
+- `cropIdDocument: Bitmap`: user's document image.
+- `salfieBitmap: Bitmap`: user's face image.
+- `userConfig: CompareFaceAndMugShortConfig`: user's config for changing settings.
+
+The `DocumentAndFaceConfig` has default values:
+
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
 
 **Returns:**
-- ```ScanDocumentsFront``` object witch have ```JSON```,Cropped document and mugshot if available , if not available please check ```val``` from ``` result.getResponse().docFace.documentData.documentValidationStatus```
 
+- `String`: a `JSON` representing the face status.
 
-**documentValidationStatus**
+**Example:**
+
 ```kotlin
-
-val INVALID_IMAGE = -100
-val SYSTEM_ERROR = -2
-val MOVE_CLOSE/INVALID_DOCUMENT = -1
-val SUCCESS =0
-val DOCUMENT_IS_BLURRY = 2 
-val UNABLE_TO_PARSE_DOCUMENT = 3
-val TOO_FAR = 4
-val TOO_FAR_LEFT =5 
-val TOO_FAR_RIGHT = 6 
-val TOO_FAR_UP = 7 
-val TOO_FAR_DOWN = 8
-val MUGSHOT_IS_BLURRY_OR_FINGER_BLOCKING_THE_DOCUMENT = 9 
-val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
-
+fun compareTwoImage(userImage:Bitmap, cropIdImage:Bitmap){
+    viewModelScope.launch(Dispatchers.IO) {
+        privateIdentitySession.compareDocumentAndFace(
+            userConfig = CompareFaceAndMugShortConfig(), userImage, cropIdImage)
+    }
+}
 ```
 
+A sample JSON result:
 
-
-## BackDocumentScan
-```kotlin
- val result = privateIdentitySession.backDocumentScan(bitmap = bitmap, IdDocumentBackScanConfig())
+```json
+{
+ "call_status": {
+  "return_status": 0,
+  "operation_tag": "compare_mugshot_and_face",
+  "return_message": "",
+  "mf_token": "",
+  "operation_id": 17,
+  "operation_type_id": 12
+ },
+ "face_compare": {
+  "result": 0,
+  "a_face_validation_status": 0,
+  "b_face_validation_status": 0,
+  "distance_min": 0.964277208,
+  "distance_mean": 0.964277208,
+  "distance_max": 0.964277208,
+  "conf_score": 56.8121185,
+  "face_thresholds": [],
+  "document_data": {
+   "document_conf_level": 0,
+   "cropped_document_image": {
+    "info": {
+     "width": 112,
+     "height": 112,
+     "channels": 4,
+     "depths": 0,
+     "color": 4
+    },
+    "data": ""
+   },
+   "document_validation_status": 0,
+   "status_message": "",
+   "mrz_text": []
+  },
+  "cropped_face_image": {
+   "info": {
+    "width": 112,
+    "height": 112,
+    "channels": 4,
+    "depths": 0,
+    "color": 4
+   },
+   "data": ""
+  }
+ }
+}
 ```
 
-This method valid photo of document witch have Bar code PDF 417 barcode, the higger the quilty of image the batter chance it will read data from barcode, if you want just scan bar for faster result then use `document_scan_barcode_only` , and it return `ScanDocumentsBack` Cropped bitmap, Cropped Barcode and result.
+## Front Document Scan
+
+This function allows you to scan data from the front side of the document (government ID or driver's license). This method accepts a valid image of the front side of the ID document with a mugshot and returns a cropped document and mugshot images as well as a resulting JSON document.
+
+```kotlin
+fun frontDocumentScan(bitmap: Bitmap, idDocumentFrontScanConfig: IdDocumentFrontScanConfig): ScanDocumentsFront
+```
 
 **Parameters:**
-- `bitmap`: Image that contain valid id document with barcode PDF 417 format.
-- `IdDocumentFrontScanConfig`: Configurable params
-   - `documentScanBarcodeOnly` default value true
-   - `skipAntispoof` default value false
-   - `thresholdDocX` default value 0.2
-   - `thresholdDocY` default value 0.2
-   - `documentAutoRotation` default value 0.2
+
+- `bitmap: Bitmap`: input image for scanning document.
+- `idDocumentFrontScanConfig: IdDocumentFrontScanConfig`: user's config for changing settings.
+  
+The `IdDocumentFrontScanConfig` has default values:
+
+2) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+3) `thresholdDocX` - `0.2`: the minimal allowed distance (as the ratio of input image width) between the detected document edge and the left/right sides of the input image.
+4) `thresholdDocY` - `0.2`: the minimal allowed distance (as the ratio of input image height) between the detected document edge and the top/bottom sides of the input image.
+5) `documentAutoRotation` - `true`: If the value is 'true,' the function will rotate the input image several times for better detection results.
 
 **Returns:**
-Return `ScanDocumentsBack` witch have cropped document, cropped barcode,result.
 
-**Example**
+- `ScanDocumentsFront`: an object that contains JSON result, recognized document image, and mugshot image (face image of the front document).
+
+**Example:**
+
+```kotlin
+fun scanDocumentsFront(bitmap: Bitmap) {
+    val result = privateIdentitySession.frontDocumentScan(
+        bitmap = bitmap, IdDocumentFrontScanConfig(
+            skipAntispoof = true, thresholdDocY = 0.0, thresholdDocX = 0.0))
+    updateUi(result)
+}
+```
+
+## Back Document Scan
+
+This function allows you to scan data from the back side of the document (government ID or driver's license). This method accepts a valid image of the back side of the ID document with a PTD417 barcode. It returns a cropped document and barcode images, as well as a resulting JSON document that contains barcode parsing results, if any. Note: high input image resolution is important for better barcode parsing results.
+
+```kotlin
+fun backDocumentScan(bitmap: Bitmap, documentConfig: IdDocumentBackScanConfig): ScanDocumentsBack
+```
+
+If you want to scan the barcode, use the `documentScanBarcodeOnly` parameter equal to `true` for faster processing.
+
+**Parameters:**
+
+- `image: UIImage`: input image for scanning document.
+- `config: DocumentBackScanConfig`: user's config for changing settings.
+
+The `DocumentBackScanConfig` has default values:
+
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+2) `documentScanBarcodeOnly` - `true`: if you need to scan the whole document, you should use the `false` value here.
+3) `thresholdDocX` - `0.2`: the minimal allowed distance (as the ratio of input image width) between the detected document edge and the left/right sides of the input image.
+4) `thresholdDocY` - `0.2`: the minimal allowed distance (as the ratio of input image height) between the detected document edge and top/bottom sides of the input image.
+
+**Returns:**
+
+- `ScanDocumentsBack`: an object that contains a `JSON` result, recognized document image (if any), and barcode image.
+
+**Example:**
 
 ```kotlin
 fun scanDocumentsBack(bitmap: Bitmap) {
-        val result = privateIdentitySession.backDocumentScan(bitmap = bitmap, IdDocumentBackScanConfig(skipAntispoof = true, thresholdDocY = 0.0, thresholdDocX = 0.0))
-        updateUi(result)
-    }
+    val result = privateIdentitySession.backDocumentScan(
+        bitmap = bitmap, IdDocumentBackScanConfig(
+            skipAntispoof = true, thresholdDocY = 0.0, thresholdDocX = 0.0))
+    updateUi(result)
+}
 ```
 
-**documentValidationStatus Code**
-```kotlin
+## SDK Status Codes
 
-val INVALID_IMAGE = -100
-val SYSTEM_ERROR = -2
-val MOVE_CLOSE/INVALID_DOCUMENT = -1
-val SUCCESS =0
-val DOCUMENT_IS_BLURRY = 2 
-val UNABLE_TO_PARSE_DOCUMENT = 3
-val TOO_FAR = 4
-val TOO_FAR_LEFT =5 
-val TOO_FAR_RIGHT = 6 
-val TOO_FAR_UP = 7 
-val TOO_FAR_DOWN = 8
-val MUGSHOT_IS_BLURRY_OR_FINGER_BLOCKING_THE_DOCUMENT = 9 
-val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
-
-```
-
-
-----------------------
-
-Face Status:
+### Face Validation Status
 
 * -100 Internal Error
 * -1 No Face Found
@@ -367,9 +408,7 @@ Face Status:
 * 22 Face tilted right
 * 23 Face rotated left
 
-----------------------
-
-Antispoof Status:
+### Anti-spoof Status
 
 * -100 Invalid Image
 * -5 Greyscale Image
@@ -379,4 +418,20 @@ Antispoof Status:
 * 0 Real
 * 1 Spoof
 
-----------------------
+### Document Validation Status
+
+```kotlin
+val INVALID_IMAGE = -100
+val SYSTEM_ERROR = -2
+val MOVE_CLOSE/INVALID_DOCUMENT = -1
+val SUCCESS =0
+val DOCUMENT_IS_BLURRY = 2 
+val UNABLE_TO_PARSE_DOCUMENT = 3
+val TOO_FAR = 4
+val TOO_FAR_LEFT =5 
+val TOO_FAR_RIGHT = 6 
+val TOO_FAR_UP = 7 
+val TOO_FAR_DOWN = 8
+val MUGSHOT_IS_BLURRY_OR_FINGER_BLOCKING_THE_DOCUMENT = 9 
+val DOCUMENT_FOUND_IS_NOT_VALID_FRONT_DOCUMENT = 18
+```
