@@ -305,6 +305,70 @@ A sample JSON result:
 }
 ```
 
+
+### Compare Faces
+
+```kotlin
+fun compareFaces(compareFacesConfig: CompareFacesConfig, faceOne: Bitmap, faceTwo: Bitmap) : String
+```
+
+**Parameters:**
+
+- `faceOne: Bitmap`: user's first image.
+- `faceTwo: Bitmap`: user's second image.
+- `compareFacesConfig: CompareFacesConfig`: user's config for changing settings.
+  
+The `CompareFacesConfig` has default values:
+
+1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+2) `faceMatchingThreshold` - `1.24`: Threshold for matching faces.
+
+**Returns:**
+
+- `String`: a `JSON` representing the face status.
+
+**Example:**
+
+```kotlin
+fun compareTwoImage(){
+    viewModelScope.launch(Dispatchers.IO) {
+        val bitmapTwo = BitmapFactory.decodeResource(context.resources, R.drawable.ellon_image)
+        val bitmapOne = BitmapFactory.decodeResource(context.resources, R.drawable.test_user_image)
+        privateIdentitySession.compareFaces(
+            compareFacesConfig= CompareFacesConfig(skipAntispoof = true),bitmapOne,bitmapTwo)
+    }
+}
+```
+
+A sample JSON result:
+
+```json
+{
+ "call_status": {
+  "return_status": 0,
+  "operation_tag": "compare_files",
+  "return_message": "",
+  "mf_token": "",
+  "operation_id": 11,
+  "operation_type_id": 6
+ },
+ "face_compare": {
+  "result": 1,
+  "a_face_validation_status": 0,
+  "b_face_validation_status": 0,
+  "distance_min": 0.881899476,
+  "distance_mean": 0.881899476,
+  "distance_max": 0.881899476,
+  "conf_score": 0.711803317,
+  "face_thresholds": [
+   0.3,
+   1.24,
+   0.65
+  ]
+ }
+}
+```
+
 ### Front Document Scan
 
 This function allows you to scan data from the front side of the document (government ID or driver's license). This method accepts a valid image of the front side of the ID document with a mugshot and returns a cropped document and mugshot images as well as a resulting JSON document.
