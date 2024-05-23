@@ -226,7 +226,7 @@ fun predictFace() {
 ### Compare Document and Face
 
 ```kotlin
-fun campareMugShort(userConfig: CompareFaceAndMugShortConfig, salfieBitmap: Bitmap, cropIdDocument: Bitmap): String
+fun compareDocumentAndFace(userConfig: CompareFaceAndMugShortConfig, salfieBitmap: Bitmap, cropIdDocument: Bitmap): String
 ```
 
 **Parameters:**
