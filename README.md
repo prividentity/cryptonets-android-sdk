@@ -38,7 +38,7 @@ Builds
 
 ### Steps:
 
-1. **Download library**: Download the `cryptonets-android-sdk.aar` file from the [Release]([https://drive.google.com/file/](https://github.com/prividentity/cryptonets-android-sdk/releases)) section.
+1. **Download library**: Download the `cryptonets-android-sdk.aar` file from the [Release](https://github.com/prividentity/cryptonets-android-sdk/releases) section.
 3. **Open project**: Launch Android Studio and open your project.
 4. **Create library directory**: Navigate to: `Project` → `app` → `right-click` → `New` → `Directory`, and name the new directory `libs`.
 5. **Copy library file**: Copy the downloaded `cryptonets-android-sdk.aar` file into the `libs` directory.
