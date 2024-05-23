@@ -151,10 +151,7 @@ This method takes an image of croped document witch have human face  in the form
 **Returns:**
 
 - A `JSON` response.
-  ```Kotlin
-  
-  ```
-
+ 
 **Example:**
 
 ```kotlin
