@@ -238,6 +238,7 @@ fun compareDocumentAndFace(userConfig: CompareFaceAndMugShortConfig, salfieBitma
 The `DocumentAndFaceConfig` has default values:
 
 1) `skipAntispoof` - `true`: anti-spoof is not enabled by default.
+2) `blurThreshold` - `15.0`: the threshold for marking input mugshot face as blurry. Smaller values are less restrictive, and 0.0 means no blurriness check.
 
 **Returns:**
 
@@ -388,6 +389,7 @@ The `IdDocumentFrontScanConfig` has default values:
 3) `thresholdDocX` - `0.2`: the minimal allowed distance (as the ratio of input image width) between the detected document edge and the left/right sides of the input image.
 4) `thresholdDocY` - `0.2`: the minimal allowed distance (as the ratio of input image height) between the detected document edge and the top/bottom sides of the input image.
 5) `documentAutoRotation` - `true`: If the value is 'true,' the function will rotate the input image several times for better detection results.
+6) `blurThreshold` - `15.0`: the threshold for marking input mugshot face as blurry. Smaller values are less restrictive, and 0.0 means no blurriness check.
 
 **Returns:**
 
