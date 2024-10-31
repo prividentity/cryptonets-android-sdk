@@ -192,12 +192,12 @@ The `EnrollConfig` has default values:
 Perform predict (authenticate a user) after enrolling the user. This method returns a GUID/PUID if the prediction is successful; otherwise, face validation status and anti-spoof status code from the JSON response. You can get code descriptions at the end of the documentation. However, if the user is not enrolled in the system, this call will return a status of -1 and the message "User not enrolled."
 
 ```kotlin
-fun predict(bitmap: Bitmap, preidctConfig: PredictConfig): String
+fun predict(bitmap: Bitmap, predictConfig: PredictConfig): String
 ```
 
 **Parameters:**
 - `bitmap: Bitmap`: input image for enrolment.
-- `preidctConfig: PredictConfig`: user's config for changing settings.
+- `predictConfig: PredictConfig`: user's config for changing settings.
 
 The `PredictConfig` has default values:
 
@@ -226,13 +226,13 @@ fun predictFace() {
 ### Compare Document and Face
 
 ```kotlin
-fun compareDocumentAndFace(userConfig: CompareFaceAndMugShortConfig, salfieBitmap: Bitmap, cropIdDocument: Bitmap): String
+fun compareDocumentAndFace(userConfig: CompareFaceAndMugShortConfig, selfieBitmap: Bitmap, cropIdDocument: Bitmap): String
 ```
 
 **Parameters:**
 
 - `cropIdDocument: Bitmap`: user's document image.
-- `salfieBitmap: Bitmap`: user's face image.
+- `selfieBitmap: Bitmap`: user's face image.
 - `userConfig: CompareFaceAndMugShortConfig`: user's config for changing settings.
 
 The `DocumentAndFaceConfig` has default values:
